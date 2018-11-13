@@ -3,6 +3,7 @@
 
 # Dependencies
 * CMake
+* youtube-dl (https://youtube-dl.org/)
 * OpenCV (https://opencv.org/)
 
 # To Build
@@ -13,3 +14,10 @@ $ mkdir build
 $ cd build
 $ cmake ..
 ```
+
+# Downlaoding Input Data
+
+To download sample input data, use the script `data/getvids.sh`. 
+This will download videos corresponding to the youtube links specified in `data/videolinks.txt`.
+
+`$ cd data && ./getvids.sh`
