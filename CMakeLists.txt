@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 2.8)
-CMAKE_POLICY(SET CMP0072 NEW)
 
 project(traffic-detect)
 set(CMAKE_CXX_STANDARD 11)
