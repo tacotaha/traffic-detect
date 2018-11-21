@@ -10,4 +10,4 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 MESSAGE("OpenCV_LIBS: " ${OpenCV_LIBRARIES})
 
 add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})# ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES}) 
+target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
