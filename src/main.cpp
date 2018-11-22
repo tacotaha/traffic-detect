@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
   }
 
   size_t fps, frame_count, width, height;
-  cv::Mat frame, thresh, fg_img, fg_mask;
+  cv::Mat frame, thresh, fg_img, fg_mask, output;
   cv::VideoCapture cap(argv[1]);
   cv::Ptr<cv::BackgroundSubtractor> bg_sub;
  
@@ -48,7 +48,6 @@ int main(int argc, char* argv[]) {
     frame.copyTo(fg_img, fg_mask);
     Process proc(fg_img);
     proc.filter_frame(fg_img);
-    cv::Mat output = cv::Mat::zeros(frame.size(), CV_8UC3);
     Contours cntrs = proc.find_contours(fg_mask, output);
     cv::imshow("Traffic Detect", output);
   }
