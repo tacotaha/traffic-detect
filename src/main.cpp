@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
   cv::Mat frame, thresh, fg_img, fg_mask;
   cv::VideoCapture cap(argv[1]);
   cv::Ptr<cv::BackgroundSubtractor> bg_sub;
-
+ 
   if (!cap.isOpened()) {
     std::cerr << "Failed to play file " << argv[1] << std::endl;
     std::cerr << cv::getBuildInformation() << std::endl;
@@ -37,8 +37,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Frame Height = " << height << std::endl;
   }
 
-  /* Train the bg subtractor on the first 500 frames */
-  for (size_t i = 0; i < 500; ++i) {
+  for (size_t i = 0; i < 475; ++i) {
     cap.read(frame);
     bg_sub->apply(frame, fg_mask, -1);
   }
@@ -49,7 +48,9 @@ int main(int argc, char* argv[]) {
     frame.copyTo(fg_img, fg_mask);
     Process proc(fg_img);
     proc.filter_frame(fg_img);
-    cv::imshow("Traffic Detect", fg_img);
+    cv::Mat output = cv::Mat::zeros(frame.size(), CV_8UC3);
+    Contours cntrs = proc.find_contours(fg_mask, output);
+    cv::imshow("Traffic Detect", output);
   }
 
   return 0;
