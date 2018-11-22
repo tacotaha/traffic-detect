@@ -25,6 +25,7 @@ Contours Process::find_contours(const cv::Mat& fg_mask, cv::Mat& dst){
     std::vector<cv::Point> contour_pts;
     std::vector<std::array<int, 2>> centroids;
     std::vector<std::vector<cv::Point>> contours;
+    dst = cv::Mat::zeros(fg_mask.size(), CV_8UC3);
     cv::findContours(fg_mask, contours, hierarchy,
                      cv::RETR_EXTERNAL, cv::CHAIN_APPROX_TC89_L1);
     for(size_t i = 0; i < contours.size(); ++i){
