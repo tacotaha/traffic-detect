@@ -9,5 +9,8 @@ find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 MESSAGE("OpenCV_LIBS: " ${OpenCV_LIBRARIES})
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+SET(TARGET_H src/process.hpp)
+SET(TARGET_SRC src/process.cpp src/main.cpp)
+
+add_executable(${PROJECT_NAME} ${TARGET_SRC} ${TARGET_H} )
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
