@@ -15,7 +15,8 @@ int main(int argc, char* argv[]) {
   cv::Mat frame, thresh, fg_img, fg_mask, output;
   cv::VideoCapture cap(argv[1]);
   cv::Ptr<cv::BackgroundSubtractor> bg_sub;
- 
+  cv::Point p1, p2;
+
   if (!cap.isOpened()) {
     std::cerr << "Failed to play file " << argv[1] << std::endl;
     std::cerr << cv::getBuildInformation() << std::endl;
@@ -49,9 +50,12 @@ int main(int argc, char* argv[]) {
     Process proc(fg_img);
     proc.filter_frame(fg_img);
     Contours cntrs = proc.find_contours(fg_mask, output);
-    cv::line(output, cv::Point(0, output.rows >> 1), 
-             cv::Point(output.cols, output.rows >> 1),
-             cv::Scalar(0xff,0, 0));
+    p1 = cv::Point(0, output.rows >> 1);
+    p2 = cv::Point(output.cols, output.rows >> 1);
+    cv::line(output,p1, p2, cv::Scalar(0xff,0, 0));
+    for(size_t i = 0; i < cntrs.centroids.size(); ++i)
+        if(cntrs.centroids[i][1] == output.rows >> 1)
+            std::cout << "Car crossed!" << std::endl;
     cv::imshow("Traffic Detect", output);
   }
 

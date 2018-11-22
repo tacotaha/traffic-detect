@@ -12,7 +12,6 @@ struct Contours{
 class Process {
  private:
   cv::Mat img, kernel;
-
  public:
   Process(const cv::Mat&);
   void filter_frame(cv::Mat&);
