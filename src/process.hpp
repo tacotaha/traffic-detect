@@ -1,22 +1,20 @@
 #ifndef PROCESS_HPP
 #define PROCESS_HpP
 
-#include <vector>
-#include <iostream>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
+#include <vector>
 
-typedef uint unsigned int;
+typedef unsigned int uint;
 
-class ImageProcessing{
-    private:
-        cv::Mat img;
-    public:
-        ImageProcessing(cv::Mat img) : img(img){}; 
-        int filter_frame(const cv::Mat&, cv::Mat&);
-        int subtract_background(const cv::Mat&, cv::Mat&);
-        int get_contours(const uint, const uint, std::vector<vector<cv::Point>>&);
+class Process {
+ private:
+  cv::Mat img, kernel;
+
+ public:
+  Process(const cv::Mat&);
+  void filter_frame(cv::Mat&);
+  int get_contours(const uint, const uint,
+                   std::vector<std::vector<cv::Point>>&);
 };
 
 #endif /* PROCESS_HPP */
