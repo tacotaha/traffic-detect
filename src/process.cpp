@@ -1,6 +1,6 @@
-#include "process.hpp"
-#include <opencv2/opencv.hpp>
 #include <vector>
+#include <opencv2/opencv.hpp>
+#include "process.hpp"
 
 #define THRESH_VAL 50
 

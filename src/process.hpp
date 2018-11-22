@@ -1,8 +1,8 @@
 #ifndef PROCESS_HPP
-#define PROCESS_HpP
+#define PROCESS_HPP
 
-#include <opencv2/opencv.hpp>
 #include <vector>
+#include <opencv2/opencv.hpp>
 
 typedef unsigned int uint;
 
