@@ -49,6 +49,9 @@ int main(int argc, char* argv[]) {
     Process proc(fg_img);
     proc.filter_frame(fg_img);
     Contours cntrs = proc.find_contours(fg_mask, output);
+    cv::line(output, cv::Point(0, output.rows >> 1), 
+             cv::Point(output.cols, output.rows >> 1),
+             cv::Scalar(0xff,0, 0));
     cv::imshow("Traffic Detect", output);
   }
 
