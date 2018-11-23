@@ -35,6 +35,7 @@ Contours Process::find_contours(const cv::Mat& fg_mask, cv::Mat& dst) {
   std::vector<cv::Point> contour_pts;
   std::vector<std::array<int, 2>> centroids;
   std::vector<std::vector<cv::Point>> contours;
+  std::vector<cv::Rect> bounding_rects;
   dst = cv::Mat::zeros(fg_mask.size(), CV_8UC3);
   cv::findContours(fg_mask, contours, hierarchy, cv::RETR_EXTERNAL,
                    cv::CHAIN_APPROX_TC89_L1);
@@ -46,7 +47,8 @@ Contours Process::find_contours(const cv::Mat& fg_mask, cv::Mat& dst) {
     rect = cv::boundingRect(cv::Mat(contour_pts));
     centroids.push_back(
         {rect.x + (rect.width >> 1), rect.y + (rect.height >> 1)});
+    bounding_rects.push_back(rect);
     cv::drawContours(dst, contours, i, cv::Scalar(0xff, 0xff, 0xff));
   }
-  return {contours, centroids};
+  return {contours, centroids, bounding_rects};
 }
