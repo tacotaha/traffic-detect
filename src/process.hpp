@@ -1,17 +1,19 @@
 #ifndef PROCESS_HPP
 #define PROCESS_HPP
 
-#include <vector>
 #include <opencv2/opencv.hpp>
+#include <vector>
 
-struct Contours{
-    std::vector<std::vector<cv::Point>> pts;
-    std::vector<std::array<int, 2>> centroids;
+struct Contours {
+  std::vector<std::vector<cv::Point>> pts;
+  std::vector<std::array<int, 2>> centroids;
 };
 
 class Process {
  private:
   cv::Mat img, kernel;
+  static bool valid_contour(const std::vector<cv::Point>&);
+
  public:
   Process(const cv::Mat&);
   void filter_frame(cv::Mat&);
