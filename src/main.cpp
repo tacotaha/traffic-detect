@@ -5,12 +5,17 @@
 
 #define DEBUG 0
 
+/* Draw a string 3/4 through the image */
+void set_label(cv::Mat& im, const std::string label);
+
 int main(int argc, char* argv[]) {
   if (argc != 2) {
     std::cerr << "Usage " << argv[0] << " <video.mp4>" << std::endl;
     return -1;
   }
 
+  std::string text;
+  uint crossed_count = 0;
   size_t fps, frame_count, width, height;
   cv::Mat frame, thresh, fg_img, fg_mask, output;
   cv::VideoCapture cap(argv[1]);
@@ -58,11 +63,30 @@ int main(int argc, char* argv[]) {
       if (DEBUG)
         std::cout << "Centroid y = " << cntrs.centroids[i][1]
                   << "Ref. line y = " << (output.rows >> 1) << std::endl;
-      if (cntrs.centroids[i][1] == output.rows >> 1)
+      if (cntrs.centroids[i][1] == output.rows >> 1) {
         std::cout << "Car crossed!" << std::endl;
+        ++crossed_count;
+      }
     }
+    if(DEBUG)
+        std::cout << "COUNT = " << crossed_count << std::endl;
+    set_label(frame, "Count = " + std::to_string(crossed_count));
     cv::imshow("Contours", output);
     cv::imshow("Traffic Detect", frame);
   }
   return 0;
+}
+
+void set_label(cv::Mat& im, const std::string label) {
+  int fontface = cv::FONT_HERSHEY_SIMPLEX;
+  double scale = 2;
+  int thickness = 2;
+  int baseline = 0;
+  cv::Point origin(100, 100);
+  cv::Size text = cv::getTextSize(label, fontface, scale, thickness, &baseline);
+  cv::rectangle(im, origin + cv::Point(0, baseline),
+                origin + cv::Point(text.width, -1.5 * text.height),
+                CV_RGB(0xff, 0xff, 0xff), CV_FILLED);
+  cv::putText(im, label, origin, fontface, scale, CV_RGB(0x0, 0x0, 0xff),
+              thickness, 8);
 }
