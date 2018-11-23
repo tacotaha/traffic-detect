@@ -3,10 +3,11 @@
 #include <opencv2/opencv.hpp>
 #include "process.hpp"
 
-#define DEBUG 0
+#define DEBUG 1
+#define EPSILON 10
 
-/* Draw a string 3/4 through the image */
-void set_label(cv::Mat& im, const std::string label);
+void draw_label(cv::Mat&, const std::string);
+void draw_contours(cv::Mat&, const Contours&);
 
 int main(int argc, char* argv[]) {
   if (argc != 2) {
@@ -16,6 +17,7 @@ int main(int argc, char* argv[]) {
 
   std::string text;
   uint crossed_count = 0;
+  int line_y = 0, diff = 0;
   size_t fps, frame_count, width, height;
   cv::Mat frame, thresh, fg_img, fg_mask, output;
   cv::VideoCapture cap(argv[1]);
@@ -54,30 +56,33 @@ int main(int argc, char* argv[]) {
     Process proc(fg_img);
     proc.filter_frame(fg_img);
     Contours cntrs = proc.find_contours(fg_mask, output);
+    line_y = 3 * output.rows >> 0x2;
     if (DEBUG)
       std::cout << "Found " << cntrs.pts.size() << " Contours" << std::endl;
     assert(cntrs.pts.size() == cntrs.centroids.size());
-    cv::line(frame, cv::Point(0, output.rows >> 1),
-             cv::Point(output.cols, output.rows >> 1), cv::Scalar(0xff, 0, 0));
+    cv::line(frame, cv::Point(0, line_y), cv::Point(output.cols, line_y),
+             cv::Scalar(0xff, 0, 0));
     for (size_t i = 0; i < cntrs.centroids.size(); ++i) {
       if (DEBUG)
         std::cout << "Centroid y = " << cntrs.centroids[i][1]
-                  << "Ref. line y = " << (output.rows >> 1) << std::endl;
-      if (cntrs.centroids[i][1] == output.rows >> 1) {
+                  << "Ref. line y = " << line_y << std::endl;
+      diff = cntrs.centroids[i][1] - line_y;
+      if (diff > -1 && diff <= EPSILON) {
         std::cout << "Car crossed!" << std::endl;
         ++crossed_count;
       }
     }
-    if(DEBUG)
-        std::cout << "COUNT = " << crossed_count << std::endl;
-    set_label(frame, "Count = " + std::to_string(crossed_count));
+    if (DEBUG) std::cout << "COUNT = " << crossed_count << std::endl;
+    draw_label(frame, "Count = " + std::to_string(crossed_count));
+    draw_contours(output, cntrs);
+    draw_contours(frame, cntrs);
     cv::imshow("Contours", output);
     cv::imshow("Traffic Detect", frame);
   }
   return 0;
 }
 
-void set_label(cv::Mat& im, const std::string label) {
+void draw_label(cv::Mat& im, const std::string label) {
   int fontface = cv::FONT_HERSHEY_SIMPLEX;
   double scale = 2;
   int thickness = 2;
@@ -89,4 +94,10 @@ void set_label(cv::Mat& im, const std::string label) {
                 CV_RGB(0xff, 0xff, 0xff), CV_FILLED);
   cv::putText(im, label, origin, fontface, scale, CV_RGB(0x0, 0x0, 0xff),
               thickness, 8);
+}
+
+void draw_contours(cv::Mat& img, const Contours& cntrs) {
+  for (size_t i = 0; i < cntrs.bounding_rects.size(); ++i)
+    cv::rectangle(img, cntrs.bounding_rects[i].tl(),
+                  cntrs.bounding_rects[i].br(), CV_RGB(0, 0xff, 0), 2, 8, 0);
 }
