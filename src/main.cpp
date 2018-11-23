@@ -1,9 +1,9 @@
+#include <cassert>
 #include <iostream>
 #include <opencv2/opencv.hpp>
-
 #include "process.hpp"
 
-#define DEBUG 1
+#define DEBUG 0
 
 int main(int argc, char* argv[]) {
   if (argc != 2) {
@@ -15,7 +15,6 @@ int main(int argc, char* argv[]) {
   cv::Mat frame, thresh, fg_img, fg_mask, output;
   cv::VideoCapture cap(argv[1]);
   cv::Ptr<cv::BackgroundSubtractor> bg_sub;
-  cv::Point p1, p2;
 
   if (!cap.isOpened()) {
     std::cerr << "Failed to play file " << argv[1] << std::endl;
@@ -50,14 +49,20 @@ int main(int argc, char* argv[]) {
     Process proc(fg_img);
     proc.filter_frame(fg_img);
     Contours cntrs = proc.find_contours(fg_mask, output);
-    p1 = cv::Point(0, output.rows >> 1);
-    p2 = cv::Point(output.cols, output.rows >> 1);
-    cv::line(output,p1, p2, cv::Scalar(0xff,0, 0));
-    for(size_t i = 0; i < cntrs.centroids.size(); ++i)
-        if(cntrs.centroids[i][1] == output.rows >> 1)
-            std::cout << "Car crossed!" << std::endl;
-    cv::imshow("Traffic Detect", output);
+    if (DEBUG)
+      std::cout << "Found " << cntrs.pts.size() << " Contours" << std::endl;
+    assert(cntrs.pts.size() == cntrs.centroids.size());
+    cv::line(frame, cv::Point(0, output.rows >> 1),
+             cv::Point(output.cols, output.rows >> 1), cv::Scalar(0xff, 0, 0));
+    for (size_t i = 0; i < cntrs.centroids.size(); ++i) {
+      if (DEBUG)
+        std::cout << "Centroid y = " << cntrs.centroids[i][1]
+                  << "Ref. line y = " << (output.rows >> 1) << std::endl;
+      if (cntrs.centroids[i][1] == output.rows >> 1)
+        std::cout << "Car crossed!" << std::endl;
+    }
+    cv::imshow("Contours", output);
+    cv::imshow("Traffic Detect", frame);
   }
-
   return 0;
 }
