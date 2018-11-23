@@ -7,6 +7,7 @@
 struct Contours {
   std::vector<std::vector<cv::Point>> pts;
   std::vector<std::array<int, 2>> centroids;
+  std::vector<cv::Rect> bounding_rects;
 };
 
 class Process {
