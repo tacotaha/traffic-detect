@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 
   std::string text;
   uint crossed_count = 0;
-  int line_y = 0, diff = 0;
+  int k = 0, line_y = 0, diff = 0;
   size_t fps, frame_count, width, height;
   cv::Mat frame, thresh, fg_img, fg_mask, output;
   cv::VideoCapture cap(argv[1]);
@@ -50,13 +50,14 @@ int main(int argc, char* argv[]) {
   }
 
   while (cvWaitKey(10) != 27 && cap.read(frame)) {
+      if(k % 4 == 0){
     fg_img = cv::Scalar::all(0);
     bg_sub->apply(frame, fg_mask, -1);
     frame.copyTo(fg_img, fg_mask);
     Process proc(fg_img);
     proc.filter_frame(fg_img);
     Contours cntrs = proc.find_contours(fg_mask, output);
-    line_y = 3 * output.rows >> 0x2;
+    line_y = 3 * output.rows >> 2;
     if (DEBUG)
       std::cout << "Found " << cntrs.pts.size() << " Contours" << std::endl;
     assert(cntrs.pts.size() == cntrs.centroids.size());
@@ -79,6 +80,8 @@ int main(int argc, char* argv[]) {
     cv::imshow("Contours", output);
     cv::imshow("Traffic Detect", frame);
   }
+  }
+  ++k;
   return 0;
 }
 

@@ -5,8 +5,8 @@
 #include "process.hpp"
 
 #define THRESH_VAL 50
-#define MIN_RECT_HEIGHT 35
-#define MIN_RECT_WIDTH 35
+#define MIN_RECT_HEIGHT 50
+#define MIN_RECT_WIDTH 50
 
 Process::Process(const cv::Mat& src) {
   src.copyTo(this->img);
