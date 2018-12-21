@@ -1,6 +1,8 @@
 # Traffic Detect
 > Quantifying traffic levels given an input video stream of a highway
 
+![alt text](output.png)
+
 # Dependencies
 * CMake
 * youtube-dl (https://youtube-dl.org/)
