@@ -10,7 +10,7 @@
 
 # To Build
 ```
-$ git clone https://github.com/tazzaoui/traffic-detect.git
+$ git clone https://github.com/tacotaha/traffic-detect.git
 $ cd traffic-detect
 $ mkdir build 
 $ cd build
